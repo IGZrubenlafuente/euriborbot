@@ -1,0 +1,2 @@
+# euriborbot
+Euribor bot
