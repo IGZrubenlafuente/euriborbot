@@ -1,5 +1,8 @@
 const request = require('request')
 const cheerio = require('cheerio')
+const moment = require('moment')
+moment.locale('es')
+const dateFormat = 'DD/MM/YYYY'
 const Twit = require('twit')
 const T = new Twit({
   consumer_key: process.env.CONSUMER_KEY,
@@ -35,7 +38,7 @@ const getData = () => {
           }
           resolve(euriborData)
         } else {
-          const error = 'no row found in body'
+          const error = 'no data table found in body'
           // console.log(error)
           reject(error)
         }
@@ -47,18 +50,23 @@ const getData = () => {
 getData()
   .then(euriborData => {
     // console.log('euriborData =', euriborData)
-    const tweetMessage = '#Euribor ' + euriborData.date + ': ' + euriborData.value
-    console.log('tweetMessage =', tweetMessage)
-    T.post('statuses/update',
-      {status: tweetMessage},
-      function (error, tweetData, response) {
-        if (error) {
-          console.log('twit error =', error)
-          return
+    const sDateToday = moment().format(dateFormat)
+    // console.log('isSameDate =', sDateToday === euriborData.date)
+    if (sDateToday === euriborData.date) {
+      const tweetMessage = `#Euribor ${euriborData.date}: ${euriborData.value}`
+      console.log('tweetMessage =', tweetMessage)
+      T.post('statuses/update',
+        {status: tweetMessage},
+        function (error, tweetData, response) {
+          if (error) {
+            throw error
+          }
+          // console.log('post tweetData =', tweetData);
         }
-        // console.log('post tweetData =', tweetData);
-      }
-    )
+      )
+    } else {
+      console.log(`no tweet: collected data ('${euriborData.date}') is not today's`)
+    }
   })
   .catch(err => {
     console.log('err =', err)
