@@ -8,8 +8,8 @@
     "email": "ruben.lafuente@intelygenz.com"
   },
   "scripts": {
-    "start": "node ./bin/app",
-    "lint": "eslint bin"
+    "start": "node ./src/app",
+    "lint": "eslint src"
   },
   "dependencies": {
     "cheerio": "0.22.0",
