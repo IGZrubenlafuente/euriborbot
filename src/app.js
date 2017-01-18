@@ -1,9 +1,17 @@
 const getData = require('./getdata')
 const tweetData = require('./tweetdata')
 
-getData()
-  .then(tweetData)
-  .catch(err => {
-    console.log('err =', err)
-  })
+const runApp = () => {
+  getData()
+    .then(tweetData)
+    .then(result => {
+      if (result && result.retryInterval) {
+        setTimeout(runApp, result.retryInterval)
+      }
+    })
+    .catch(err => {
+      console.log('err =', err)
+    })
+}
 
+runApp()

@@ -19,7 +19,8 @@ const getLastTweetDate = () => {
         }
         // console.log('tweets =', tweets)
         // console.log('date =', tweets[0].text.substr(9, 10))
-        resolve(tweets[0].text.substr(9, 10))
+        let lastTweetDate = tweets[0] ? tweets[0].text.substr(9, 10) : ''
+        resolve(lastTweetDate)
       }
     )
   })
@@ -52,8 +53,9 @@ module.exports = euriborData => {
           }
         })
     } else {
-      console.log(`no tweet: collected data (${euriborData.date}) is not today's`)
-      resolve()
+      console.log(`no tweet: collected data (${euriborData.date}) are not today's`)
+      // we'll try again after 1 minute
+      resolve({retryInterval: 1000 * 60})
     }
   })
 }

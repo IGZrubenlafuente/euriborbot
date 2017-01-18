@@ -4,8 +4,7 @@
   "description": "Euribor bot",
   "main": "bin/app.js",
   "author": {
-    "name": "Rubén Lafuente",
-    "email": "ruben.lafuente@intelygenz.com"
+    "name": "Rubén Lafuente"
   },
   "scripts": {
     "start": "node ./src/app",
