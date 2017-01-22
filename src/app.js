@@ -2,6 +2,7 @@ const getData = require('./getdata')
 const tweetData = require('./tweetdata')
 
 const runApp = () => {
+  console.log('runApp', new Date().toLocaleString())
   getData()
     .then(tweetData)
     .then(result => {
