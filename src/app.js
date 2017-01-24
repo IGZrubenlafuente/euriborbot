@@ -1,18 +1,29 @@
 const getData = require('./getdata')
 const tweetData = require('./tweetdata')
+const moment = require('moment')
+const momentUtils = require('./common/momentutils')
 
 const runApp = () => {
   console.log('runApp', new Date().toLocaleString())
-  getData()
-    .then(tweetData)
-    .then(result => {
-      if (result && result.retryInterval) {
-        setTimeout(runApp, result.retryInterval)
-      }
-    })
-    .catch(err => {
-      console.log('err =', err)
-    })
+  const oMoment = moment()
+  if (!momentUtils.isTargetDate(oMoment)) {
+    console.log(`no need to get data: today (${oMoment.format(momentUtils.settings.dateFormat)}) is not a target day`)
+    // we'll try again tomorrow
+    const intervalMs = momentUtils.getIntervalUntilTomorrow(oMoment)
+    console.log(`retry in ${(intervalMs / 1000 / 60 / 60).toFixed(1)} h`)
+    setTimeout(runApp, intervalMs)
+  } else {
+    getData()
+      .then(tweetData)
+      .then(result => {
+        if (result && result.retryInterval) {
+          setTimeout(runApp, result.retryInterval)
+        }
+      })
+      .catch(err => {
+        console.log('err =', err)
+      })
+  }
 }
 
 runApp()

@@ -1,28 +1,15 @@
 const request = require('request')
 const cheerio = require('cheerio')
 const moment = require('moment')
-moment.locale('en')
-const dateFormat = 'DD/MM/YYYY'
-
-function isTargetDate (date) {
-  const excludedDates = [
-    '01/01/2017',
-    '14/04/2017', // Good Friday
-    '17/04/2017', // Easter Monday
-    '01/05/2017',
-    '25/12/2017',
-    '26/12/2017'
-  ]
-  return date.weekday() >= 1 && date.weekday() <= 5 && !excludedDates.includes(date.format(dateFormat))
-}
+const momentUtils = require('./common/momentutils')
 
 function buildDatesObject () {
   let oMonthDates = {}
   let date = moment().startOf('month')
   let currentMonth = date.month()
   while (date.month() === currentMonth) {
-    if (isTargetDate(date)) {
-      oMonthDates[date.format(dateFormat)] = null
+    if (momentUtils.isTargetDate(date)) {
+      oMonthDates[date.format(momentUtils.settings.dateFormat)] = null
     }
     date.add(1, 'days')
   }
