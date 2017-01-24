@@ -1,3 +1,4 @@
+'use strict'
 const getData = require('./getdata')
 const tweetData = require('./tweetdata')
 const moment = require('moment')

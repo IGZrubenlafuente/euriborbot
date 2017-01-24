@@ -1,3 +1,4 @@
+'use strict'
 const moment = require('moment')
 const momentUtils = require('./common/momentutils')
 moment.locale(momentUtils.settings.locale)

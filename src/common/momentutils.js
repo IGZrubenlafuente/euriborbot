@@ -1,3 +1,4 @@
+'use strict'
 const moment = require('moment')
 const momentSettings = require('./momentsettings.json')
 // 01/01, Good Friday, Easter Monday, 01/05, 25/12, 26/12
