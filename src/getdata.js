@@ -1,10 +1,10 @@
 const request = require('request')
 const cheerio = require('cheerio')
 const moment = require('moment')
-moment.locale('es')
+moment.locale('en')
 const dateFormat = 'DD/MM/YYYY'
 
-const isTargetDate = date => {
+function isTargetDate (date) {
   const excludedDates = [
     '01/01/2017',
     '14/04/2017', // Good Friday
@@ -13,24 +13,58 @@ const isTargetDate = date => {
     '25/12/2017',
     '26/12/2017'
   ]
-  return date.weekday() <= 4 && !excludedDates.includes(date.format(dateFormat))
+  return date.weekday() >= 1 && date.weekday() <= 5 && !excludedDates.includes(date.format(dateFormat))
 }
 
-const getMonthDates = () => {
-  let aMonthDates = []
+function buildDatesObject () {
+  let oMonthDates = {}
   let date = moment().startOf('month')
   let currentMonth = date.month()
   while (date.month() === currentMonth) {
     if (isTargetDate(date)) {
-      aMonthDates[date.format(dateFormat)] = null
+      oMonthDates[date.format(dateFormat)] = null
     }
     date.add(1, 'days')
   }
-  return aMonthDates
+  return oMonthDates
 }
 
-const aDates = getMonthDates()
-console.log('aDates =', aDates)
+// const oDates = buildDatesObject()
+// console.log('oDates =', oDates)
+// console.log('Object.keys(oDates) =', Object.keys(oDates).filter(key => oDates[key] !== null))
+
+function fillDatesObject (oDates, trListado) {
+  let R = trListado.length
+  let isCurrentMonth = true
+  for (let r = 1; r < R && isCurrentMonth; r++) {
+    let TDs = trListado.eq(r).children('td')
+    let date = TDs.eq(0).text()
+    if (oDates.hasOwnProperty(date)) {
+      let value = TDs.eq(1).text()
+      oDates[date] = Number(value.replace(',', '.'))
+    } else {
+      isCurrentMonth = false
+    }
+  }
+}
+
+function getAverageObject (todaysValue, trListado) {
+  let oDates = buildDatesObject()
+  fillDatesObject(oDates, trListado)
+  // fill empty dates with today's value
+  let aEmptyDates = Object.keys(oDates).filter(key => oDates[key] === null)
+  aEmptyDates.forEach(emptyDate => {
+    oDates[emptyDate] = Number(todaysValue.replace(',', '.'))
+  })
+  // console.log('oDates =', oDates)
+  let sum = Object.keys(oDates).reduce((sum, key) => {
+    return sum + oDates[key]
+  }, 0.0)
+  return {
+    average: (sum / Object.keys(oDates).length).toFixed(3),
+    daysLeft: aEmptyDates.length
+  }
+}
 
 module.exports = () => {
   return new Promise((resolve, reject) => {
@@ -53,10 +87,13 @@ module.exports = () => {
           const firstValueRowTDs = trListado.eq(1).children('td')
           const date = firstValueRowTDs.eq(0).text()
           const value = firstValueRowTDs.eq(1).text()
-          const euriborData = {
+          const oAverage = getAverageObject(value, trListado)
+          const euriborData = Object.assign({
             date,
             value
-          }
+          }, oAverage)
+          // Object.assign(obj1, obj2);
+          // console.log('euriborData =', euriborData)
           resolve(euriborData)
         } else {
           const error = 'no data table found in body'
