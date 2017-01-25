@@ -1,6 +1,6 @@
 {
   "name": "euriborbot",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Euribor bot",
   "main": "bin/app.js",
   "author": {
@@ -12,7 +12,8 @@
   },
   "dependencies": {
     "cheerio": "0.22.0",
-    "moment": "^2.17.1",
+    "moment": "2.17.1",
+    "moment-timezone": "0.5.11",
     "request": "2.79.0",
     "twit": "2.2.5"
   },

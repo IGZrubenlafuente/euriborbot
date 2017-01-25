@@ -1,8 +1,9 @@
 'use strict'
 const getData = require('./getdata')
 const tweetData = require('./tweetdata')
-const moment = require('moment')
+const moment = require('moment-timezone')
 const momentUtils = require('./common/momentutils')
+moment.tz.setDefault(momentUtils.settings.timezone)
 
 const runApp = () => {
   console.log('runApp', new Date().toLocaleString())

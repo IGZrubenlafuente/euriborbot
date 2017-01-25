@@ -1,6 +1,7 @@
 'use strict'
-const moment = require('moment')
+const moment = require('moment-timezone')
 const momentSettings = require('./momentsettings.json')
+moment.tz.setDefault(momentSettings.timezone)
 // 01/01, Good Friday, Easter Monday, 01/05, 25/12, 26/12
 const excludedDates = require(`./excludeddates${moment().year()}.json`)
 const oMoment1218 = moment().hours(12).minutes(18)

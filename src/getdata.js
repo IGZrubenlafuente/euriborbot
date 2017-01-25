@@ -1,8 +1,9 @@
 'use strict'
 const request = require('request')
 const cheerio = require('cheerio')
-const moment = require('moment')
+const moment = require('moment-timezone')
 const momentUtils = require('./common/momentutils')
+moment.tz.setDefault(momentUtils.settings.timezone)
 
 function buildDatesObject () {
   let oMonthDates = {}

@@ -1,7 +1,8 @@
 'use strict'
-const moment = require('moment')
+const moment = require('moment-timezone')
 const momentUtils = require('./common/momentutils')
 moment.locale(momentUtils.settings.locale)
+moment.tz.setDefault(momentUtils.settings.timezone)
 const Twit = require('twit')
 const T = new Twit({
   consumer_key: process.env.CONSUMER_KEY,
@@ -67,7 +68,7 @@ module.exports = euriborData => {
       console.log(`no tweet: collected data (${euriborData.date}) are not today's`)
       // we'll try again later
       const intervalMs = momentUtils.getIntervalForLaterToday(oMoment)
-      console.log(`retry in ${intervalMs / 1000 / 60} min`)
+      console.log(`retry in ${(intervalMs / 1000 / 60).toFixed(1)} min`)
       resolve({retryInterval: intervalMs})
     }
   })
