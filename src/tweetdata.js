@@ -53,7 +53,10 @@ module.exports = euriborData => {
                   reject(error)
                 }
                 console.log(`tweet posted! tweetData.id_str = ${tweetData.id_str}: ${tweetMessage}`)
-                resolve()
+                // see you tomorrow!
+                const intervalMs = momentUtils.getIntervalUntilTomorrow(oMoment)
+                console.log(`retry in ${(intervalMs / 1000 / 60 / 60).toFixed(1)} h`)
+                resolve({retryInterval: intervalMs})
               }
             )
           } else {
